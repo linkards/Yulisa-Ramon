@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nuestra Boda | Yulisa & Ramón</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        wine: {
+                            50: '#f9f1f2',
+                            100: '#f2e1e4',
+                            700: '#69202c',
+                            800: '#531923',
+                            900: '#42131b',
+                        },
+                        cream: '#FAF7F2',
+                        accentGold: '#D4AF37'
+                    },
+                    fontFamily: {
+                        script: ['"Great Vibes"', 'cursive'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Montserrat"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f3efe9;
+            font-family: 'Montserrat', sans-serif;
+            color: #3f3637;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .bg-linen {
+            background-color: #FAF7F2;
+            background-image: radial-gradient(#e6ded2 0.75px, transparent 0.75px);
+            background-size: 16px 16px;
+        }
+
+        .envelope-wrapper {
+            perspective: 1200px;
+            transition: all 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .envelope-flap {
+            transform-origin: top center;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+        }
+
+        .envelope-open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 10;
+        }
+
+        .envelope-open .wax-seal {
+            opacity: 0;
+            transform: scale(0.6) translateY(-20px);
+            pointer-events: none;
+        }
+
+        @keyframes subtlePulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 25px -5px rgba(83, 25, 35, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 15px 30px -5px rgba(83, 25, 35, 0.6); }
+        }
+
+        .pulse-seal {
+            animation: subtlePulse 2.5s infinite ease-in-out;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF7F2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #69202c;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="flex justify-center min-h-screen">
+
+    <div id="envelopeOverlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-linen bg-[#FAF7F2] transition-opacity duration-700">
+        <p class="text-stone-700 font-serif italic text-lg mb-6 tracking-wider animate-bounce text-center">
+            Tienes una invitación especial<br>
+            <span class="text-xs uppercase tracking-widest font-sans text-wine-800 font-semibold">Toca el sello para abrir</span>
+        </p>
+
+        <div id="envelopeCard" class="envelope-wrapper relative w-[90%] max-w-[340px] h-[240px] bg-wine-800 rounded-b-2xl shadow-2xl flex flex-col items-center justify-end overflow-hidden cursor-pointer border-t border-wine-700">
+            <div id="flap" class="envelope-flap absolute top-0 left-0 w-full h-[130px] bg-wine-900 border-b border-wine-700/60 shadow-md z-20"></div>
+
+            <div class="absolute bottom-2 z-30 text-center w-full px-4 pb-2 bg-gradient-to-t from-wine-950/80 to-transparent pt-3 pointer-events-none">
+                <h2 class="font-script text-3xl sm:text-4xl text-[#a44857] tracking-wide leading-tight">Yulisa & Ramón</h2>
+                <div class="w-10 h-[1px] bg-wine-700/60 mx-auto my-1"></div>
+                <p class="font-serif text-[#c2707e] text-xs tracking-widest font-medium">19 . 03 . 2027</p>
+            </div>
+
+            <div id="waxSeal" class="wax-seal pulse-seal absolute top-[90px] z-30 w-16 h-16 rounded-full bg-gradient-to-tr from-amber-700 via-yellow-600 to-amber-500 flex items-center justify-center border-2 border-yellow-200/50 shadow-2xl transition-all duration-500">
+                <div class="w-13 h-13 rounded-full border border-dashed border-amber-900/50 flex flex-col items-center justify-center p-1">
+                    <span class="font-serif font-bold text-wine-900 text-xs tracking-tighter">Y & R</span>
+                    <i class="fa-solid fa-heart text-[8px] text-wine-900/80 mt-0.5"></i>
+                </div>
+            </div>
+            
+            <div id="cardPeek" class="absolute bottom-2 w-[92%] h-[80%] bg-cream rounded-t-lg transition-all duration-700 flex flex-col items-center justify-center border-t-2 border-wine-700/30 opacity-80">
+            </div>
+        </div>
+    </div>
+
+    <main id="invitationContent" class="w-full max-w-[430px] bg-cream shadow-2xl relative min-h-screen flex flex-col opacity-0 translate-y-8 transition-all duration-1000 bg-linen">
+
+        <div class="fixed top-4 right-4 z-40">
+            <button id="floatingMusicBtn" onclick="toggleAudio()" aria-label="Control de música" class="w-11 h-11 rounded-full bg-wine-800/90 text-rose-100 border border-rose-200/40 shadow-xl flex items-center justify-center backdrop-blur-sm transition-transform active:scale-90 hover:scale-105">
+                <i id="musicIconFloating" class="fa-solid fa-music text-sm"></i>
+            </button>
+        </div>
+
+        <audio id="weddingSong" loop preload="auto" playsinline>
+            <source src="musica.mp3" type="audio/mpeg">
+            Tu navegador no soporta el audio.
+        </audio>
+
+        <header class="relative text-center pt-12 pb-9 px-6 text-white shadow-lg overflow-hidden bg-wine-800">
+            <div class="relative z-10">
+                <p class="font-sans uppercase text-[10px] tracking-[0.3em] text-rose-100/90 mb-2 drop-shadow">Nuestra Boda</p>
+                <h1 class="font-script text-5xl sm:text-6xl text-white drop-shadow-md leading-tight">Yulisa</h1>
+                <span class="font-script text-3xl text-rose-200/90 block my-1 drop-shadow">&amp;</span>
+                <h1 class="font-script text-5xl sm:text-6xl text-white drop-shadow-md leading-tight">Ramón</h1>
+
+                <div class="inline-block mt-4 px-4 py-1 border-t border-b border-white/60 bg-wine-900/40 backdrop-blur-[2px] rounded-sm">
+                    <span class="font-serif tracking-widest text-xs uppercase text-rose-50 drop-shadow">19 . Marzo . 2027</span>
+                </div>
+            </div>
+
+            <div class="absolute bottom-0 left-0 right-0 h-4 bg-cream z-20" style="clip-path: polygon(0 100%, 50% 0, 100% 100%);"></div>
+        </header>
+
+        <section class="py-8 px-6 text-center">
+            <div class="w-full flex justify-center mb-3">
+                <svg class="w-56 h-14" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 25 Q 60 5, 100 25 T 190 25" stroke="#7e8c75" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.6"/>
+                    <circle cx="100" cy="24" r="7" fill="#69202c" opacity="0.75"/>
+                    <circle cx="100" cy="24" r="4" fill="#a44857" opacity="0.9"/>
+                    <circle cx="85" cy="20" r="5" fill="#a44857" opacity="0.65"/>
+                    <circle cx="115" cy="20" r="5" fill="#a44857" opacity="0.65"/>
+                    <path d="M75 22 C 70 14, 80 12, 85 20 Z" fill="#607157" opacity="0.7"/>
+                    <path d="M125 22 C 130 14, 120 12, 115 20 Z" fill="#607157" opacity="0.7"/>
+                    <path d="M55 25 C 48 18, 58 15, 62 23 Z" fill="#88987f" opacity="0.6"/>
+                    <path d="M145 25 C 152 18, 142 15, 138 23 Z" fill="#88987f" opacity="0.6"/>
+                </svg>
+            </div>
+
+            <p class="font-serif italic text-xs leading-relaxed text-stone-600 max-w-xs mx-auto mb-5">
+                "Y sobre todas estas cosas, vístanse de amor, que es el vínculo perfecto."
+                <span class="block font-sans not-italic font-medium text-[10px] tracking-widest text-wine-800 mt-1 uppercase">Colosenses 3:14</span>
+            </p>
+
+            <div class="flex items-center justify-center gap-3 my-4">
+                <span class="font-serif text-3xl font-light text-stone-700 tracking-tighter border-r pr-3 border-stone-300">Y</span>
+                <span class="font-serif text-3xl font-light text-stone-700 tracking-tighter">R</span>
+            </div>
+
+            <h3 class="font-sans text-[11px] font-semibold tracking-[0.25em] text-wine-800 uppercase mt-2">¡Nos Casamos!</h3>
+        </section>
+
+        <section class="mx-5 mb-10 bg-wine-800 text-rose-50 rounded-2xl p-5 shadow-xl text-center relative overflow-hidden border border-wine-700">
+            <p class="font-serif italic text-sm text-rose-200/90 mb-3">Dale play a nuestra canción</p>
+            
+            <p id="songTitleDisplay" class="text-xs font-sans tracking-wider text-rose-100 font-semibold mb-4">
+                Marry You - Bruno Mars
+            </p>
+
+            <div class="flex items-center justify-center gap-6 text-rose-200 text-lg">
+                <button onclick="rewindAudio()" title="Retroceder 10s" class="hover:text-white transition active:scale-90">
+                    <i class="fa-solid fa-backward-step"></i>
+                </button>
+                <button id="mainPlayBtn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-white text-wine-900 flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition">
+                    <i id="playIcon" class="fa-solid fa-play ml-0.5 text-base"></i>
+                </button>
+                <button onclick="forwardAudio()" title="Adelantar 10s" class="hover:text-white transition active:scale-90">
+                    <i class="fa-solid fa-forward-step"></i>
+                </button>
+            </div>
+
+            <div class="w-full bg-wine-900/80 rounded-full h-1.5 mt-4 cursor-pointer overflow-hidden" onclick="seekSong(event)">
+                <div id="songProgressBar" class="bg-rose-200 h-1.5 rounded-full w-0 transition-all duration-200"></div>
+            </div>
+            <div class="flex justify-between text-[9px] text-rose-300/80 font-sans mt-1">
+                <span id="currentTimeLabel">0:00</span>
+                <span id="durationLabel">--:--</span>
+            </div>
+        </section>
+
+        <section class="py-6 px-6 text-center bg-stone-100/70 mx-5 rounded-2xl border border-stone-200/60 mb-10">
+            <p class="font-serif italic text-xs text-stone-600 mb-4 leading-relaxed">
+                Con el amor que nos une, la bendición de Dios<br>y el apoyo de nuestros queridos padres.
+            </p>
+
+            <p class="font-serif italic text-xs text-stone-600 mt-5 pt-3 border-t border-stone-200/60">
+                Uniremos nuestras vidas en el sacramento del matrimonio.
+            </p>
+        </section>
+
+        <section class="bg-wine-800 text-white mx-4 rounded-3xl p-6 shadow-xl mb-10 text-center relative">
+            <span class="font-sans uppercase text-[10px] tracking-[0.3em] text-rose-200/70">Marzo</span>
+            
+            <div class="flex items-center justify-center gap-3 my-2 border-y border-rose-200/20 py-2 max-w-[220px] mx-auto">
+                <span class="font-sans uppercase tracking-widest text-xs text-rose-200">Viernes</span>
+                <span class="font-serif text-4xl font-bold text-rose-100">19</span>
+                <span class="font-serif text-xs text-rose-200 tracking-widest">2027</span>
+            </div>
+
+            <p class="text-[10px] uppercase tracking-[0.3em] text-rose-200/80 mt-4 mb-3 font-semibold">Faltan</p>
+
+            <div class="grid grid-cols-4 gap-2 max-w-[280px] mx-auto">
+                <div class="bg-wine-900/60 border border-wine-700/80 rounded-xl py-2 px-1">
+                    <span id="countdownDays" class="font-serif text-xl sm:text-2xl font-bold block text-rose-100">00</span>
+                    <span class="text-[9px] uppercase font-sans tracking-wider text-rose-300">Días</span>
+                </div>
+                <div class="bg-wine-900/60 border border-wine-700/80 rounded-xl py-2 px-1">
+                    <span id="countdownHours" class="font-serif text-xl sm:text-2xl font-bold block text-rose-100">00</span>
+                    <span class="text-[9px] uppercase font-sans tracking-wider text-rose-300">Horas</span>
+                </div>
+                <div class="bg-wine-900/60 border border-wine-700/80 rounded-xl py-2 px-1">
+                    <span id="countdownMins" class="font-serif text-xl sm:text-2xl font-bold block text-rose-100">00</span>
+                    <span class="text-[9px] uppercase font-sans tracking-wider text-rose-300">Min</span>
+                </div>
+                <div class="bg-wine-900/60 border border-wine-700/80 rounded-xl py-2 px-1">
+                    <span id="countdownSecs" class="font-serif text-xl sm:text-2xl font-bold block text-rose-100">00</span>
+                    <span class="text-[9px] uppercase font-sans tracking-wider text-rose-300">Seg</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="px-6 mb-10 text-center">
+            <div class="w-full flex justify-center mb-4">
+                <div class="w-16 h-[1px] bg-wine-800/30"></div>
+                <div class="mx-2 text-wine-800 flex items-center gap-1.5 text-xs">
+                    <i class="fa-solid fa-pen-fancy"></i>
+                    <span>&amp;</span>
+                    <i class="fa-solid fa-champagne-glasses"></i>
+                </div>
+                <div class="w-16 h-[1px] bg-wine-800/30"></div>
+            </div>
+
+            <div class="p-2 bg-white shadow-md rounded-xl max-w-[320px] mx-auto mb-6 border border-stone-200">
+                <img src="votos.webp" 
+                     alt="Salón y Jardín El Milagro Eventos" 
+                     class="w-full h-auto max-h-[460px] object-contain rounded-lg">
+            </div>
+
+            <h4 class="font-sans uppercase tracking-[0.25em] font-semibold text-xs text-wine-800">Lugar del Evento</h4>
+            <p class="font-serif italic text-xl text-stone-800 mt-1 font-semibold">El Milagro Eventos</p>
+            <p class="text-xs text-stone-500 font-sans mt-0.5">Blvrd Julián Treviño Elizondo 525, El Milagro, Cd. Apodaca, N.L.</p>
+
+            <div class="max-w-[280px] mx-auto mt-5 mb-5 text-center">
+                <div class="bg-stone-100/80 border border-stone-200/80 rounded-xl p-4 shadow-sm">
+                    <div class="flex items-center justify-center gap-2 text-wine-800 text-sm mb-1.5">
+                        <i class="fa-solid fa-pen-fancy"></i>
+                        <span>&amp;</span>
+                        <i class="fa-solid fa-champagne-glasses"></i>
+                    </div>
+                    <span class="block text-[10px] font-sans uppercase font-bold tracking-wider text-wine-900">Civil &amp; Recepción</span>
+                    <span class="font-serif text-2xl font-bold text-stone-800 block mt-1 text-wine-950">7:30 PM</span>
+                </div>
+            </div>
+
+            <a href="https://maps.app.goo.gl/wwvaYN6y69ScbwBp9" target="_blank" rel="noopener noreferrer" 
+               class="inline-flex items-center gap-2 px-7 py-2.5 rounded-full bg-wine-800 text-rose-100 text-xs font-sans tracking-wider uppercase font-semibold shadow-md hover:bg-wine-700 active:scale-95 transition">
+                <i class="fa-solid fa-location-dot"></i>
+                Ver ubicación en el mapa
+            </a>
+        </section>
+
+        <section class="py-6 px-6 text-center mb-10">
+            <h4 class="font-sans text-xs font-bold uppercase tracking-[0.25em] text-wine-900 mb-2">
+                Código de Vestimenta
+            </h4>
+            <p class="font-serif italic text-base text-stone-700 font-medium">Formal</p>
+
+            <div class="flex items-center justify-center gap-6 my-4 text-stone-700">
+                <div class="flex flex-col items-center">
+                    <svg class="w-10 h-16 drop-shadow-sm transition-transform hover:scale-105" viewBox="0 0 64 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M26 12 C28 8 36 8 38 12" stroke="#69202c" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M25 14 L23 24 Q32 28 41 24 L39 14" fill="#69202c" opacity="0.9"/>
+                        <path d="M23 24 Q32 30 41 24 L38 42 Q32 44 26 42 Z" fill="#531923"/>
+                        <rect x="25.5" y="41" width="13" height="2.5" rx="1.2" fill="#D4AF37"/>
+                        <path d="M25.5 43.5 C24 55 14 85 11 96 C18 98 46 98 53 96 C50 85 40 55 38.5 43.5 Z" fill="#69202c"/>
+                        <path d="M29 45 Q26 72 23 96" stroke="#f2e1e4" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+                        <path d="M35 45 Q38 72 41 96" stroke="#f2e1e4" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+                        <path d="M32 46 L32 96" stroke="#42131b" stroke-width="1.2" opacity="0.45"/>
+                    </svg>
+                </div>
+
+                <div class="h-12 w-[1px] bg-wine-800/20"></div>
+
+                <div class="flex flex-col items-center">
+                    <svg class="w-10 h-16 drop-shadow-sm transition-transform hover:scale-105" viewBox="0 0 64 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="32,20 25,12 39,12" fill="#FAF7F2"/>
+                        <path d="M28 16 L36 20 L36 16 L28 20 Z" fill="#D4AF37"/>
+                        <circle cx="32" cy="18" r="1.5" fill="#b38e24"/>
+                        <polygon points="32,38 27,18 37,18" fill="#FFFFFF"/>
+                        <circle cx="32" cy="24" r="0.8" fill="#531923"/>
+                        <circle cx="32" cy="29" r="0.8" fill="#531923"/>
+                        <circle cx="32" cy="34" r="0.8" fill="#531923"/>
+                        <path d="M19 14 L27 18 L24 45 L32 50 L40 45 L37 18 L45 14 C48 24 47 38 46 52 L38 53 L32 50 L26 53 L18 52 C17 38 16 24 19 14 Z" fill="#42131b"/>
+                        <path d="M22 15 L28 27 L25 44 L32 49 L32 38 L27 18 Z" fill="#300d14"/>
+                        <path d="M42 15 L36 27 L39 44 L32 49 L32 38 L37 18 Z" fill="#300d14"/>
+                        <polygon points="23,30 26,27 27,30" fill="#D4AF37"/>
+                        <path d="M23 52 L22 96 C24 97 28 97 29 96 L31.5 64 L34 96 C35 97 39 97 41 96 L40 52 Z" fill="#2b0c12"/>
+                    </svg>
+                </div>
+            </div>
+
+            <p class="font-serif italic text-xs text-stone-600 max-w-xs mx-auto">
+                Con mucho cariño, les pedimos evitar prendas en color blanco y rojo.
+            </p>
+        </section>
+
+        <section class="mx-5 mb-10 bg-wine-800 text-white rounded-2xl p-6 text-center shadow-lg border border-wine-700">
+            <div class="w-10 h-10 rounded-full bg-wine-900 flex items-center justify-center mx-auto mb-3 border border-rose-200/30">
+                <i class="fa-solid fa-gift text-rose-200 text-sm"></i>
+            </div>
+            
+            <h4 class="font-sans text-xs font-bold uppercase tracking-[0.2em] text-rose-100 mb-2">
+                Sugerencia de Regalos
+            </h4>
+            <p class="font-serif italic text-xs text-rose-200/90 leading-relaxed max-w-xs mx-auto mb-5">
+                El mejor regalo es tu presencia, pero si deseas tener un lindo detalle con nosotros, te compartimos nuestra opción:
+            </p>
+
+            <div>
+                <div class="bg-wine-900/60 border border-wine-700/80 rounded-xl p-4 text-center">
+                    <div class="inline-flex items-center gap-2 text-rose-100 text-xs font-sans tracking-wider uppercase font-semibold mb-1">
+                        <i class="fa-regular fa-envelope text-xs text-rose-300"></i>
+                        Lluvia de Sobres
+                    </div>
+                    <p class="text-[11px] font-serif italic text-rose-200/80 mb-3">
+                        Recepción de sobres el día del evento o vía transferencia electrónica:
+                    </p>
+
+                    <div class="bg-wine-950/70 border border-rose-200/20 rounded-lg p-3 text-left space-y-1.5 text-[11px] font-sans">
+                        <p class="text-rose-200/90"><span class="text-rose-300 font-semibold">Banco:</span> Citibanamex</p>
+                        <p class="text-rose-200/90"><span class="text-rose-300 font-semibold">Beneficiario:</span> Ramón Martínez Burón</p>
+                        <p class="text-rose-200/90"><span class="text-rose-300 font-semibold">No. Tarjeta / Cuenta:</span> <span id="clabeNumber" class="font-mono tracking-wider text-rose-100 font-semibold">5256 7842 0160 8196</span></p>
+                    </div>
+
+                    <button type="button" onclick="copyClabe()" id="btnCopyClabe" 
+                            class="mt-3 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-200/10 hover:bg-rose-200/20 text-rose-100 border border-rose-200/30 text-[10px] font-sans tracking-wider uppercase font-semibold active:scale-95 transition">
+                        <i class="fa-regular fa-copy text-xs"></i>
+                        <span id="copyClabeText">Copiar Número</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="px-5 mb-10">
+            <div class="relative p-2 bg-white shadow-lg rounded-xl overflow-hidden border border-stone-200">
+                <img src="baile.webp" 
+                     alt="Yulisa y Ramón" 
+                     class="w-full h-auto max-h-[500px] object-contain mx-auto rounded-lg filter brightness-[1.02]">
+            </div>
+        </section>
+
+        <section class="mx-5 mb-8 bg-wine-800 text-white rounded-3xl p-7 text-center shadow-xl border border-wine-700 relative">
+            <div class="w-12 h-12 rounded-full bg-wine-900/90 border border-rose-200/40 flex items-center justify-center mx-auto mb-3">
+                <i class="fa-solid fa-envelope-circle-check text-rose-200 text-base"></i>
+            </div>
+
+            <h3 class="font-sans text-xs font-bold uppercase tracking-[0.25em] text-rose-100 mb-2">
+                Confirmar Asistencia
+            </h3>
+            <p class="font-serif italic text-xs text-rose-200/90 leading-relaxed max-w-xs mx-auto mb-5">
+                Agradecemos que confirmes tu asistencia antes del <strong>01 de noviembre</strong> para reservar tu lugar.
+            </p>
+
+            <button onclick="openRsvpModal()" class="w-full py-3.5 px-6 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-sans text-xs uppercase font-bold tracking-widest shadow-lg flex items-center justify-center gap-2 transform active:scale-95 transition">
+                <i class="fa-brands fa-whatsapp text-lg"></i>
+                Confirmar por WhatsApp
+            </button>
+        </section>
+
+        <footer class="mt-auto text-center px-6 pt-6 pb-6 flex flex-col justify-between">
+            <div>
+                <p class="font-sans uppercase text-[10px] tracking-[0.3em] text-stone-500 mb-2">Esperamos contar con su presencia</p>
+                <h2 class="font-script text-5xl text-wine-900">¡Muchas Gracias!</h2>
+                <div class="w-12 h-[1px] bg-wine-800/30 mx-auto mt-4"></div>
+            </div>
+            <div class="pt-10 pb-2">
+                <p class="font-sans text-[9px] uppercase tracking-[0.25em] text-stone-400/80 font-medium">AJ CRAFTING LAB | 2026</p>
+            </div>
+        </footer>
+
+    </main>
+
+    <div id="rsvpModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-cream rounded-3xl p-6 w-full max-w-sm shadow-2xl border border-stone-200 relative transform transition-all duration-300 scale-95" id="rsvpModalContent">
+            
+            <button onclick="closeRsvpModal()" aria-label="Cerrar modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-stone-200 text-stone-600 flex items-center justify-center hover:bg-stone-300">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+
+            <div class="text-center mb-5">
+                <span class="text-wine-800 font-script text-3xl">Confirmación</span>
+                <h4 class="font-sans text-xs uppercase tracking-widest font-bold text-stone-800 mt-1">¿Nos acompañas?</h4>
+            </div>
+
+            <form onsubmit="sendWhatsApp(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[11px] font-sans font-semibold uppercase text-stone-600 tracking-wider mb-1">Nombre y Apellido</label>
+                    <input type="text" id="guestName" required placeholder="Ej. Carlos Rodríguez" 
+                           class="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 focus:outline-none focus:border-wine-800 bg-white">
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-sans font-semibold uppercase text-stone-600 tracking-wider mb-1">¿Asistirás al evento?</label>
+                    <select id="attendanceStatus" class="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 focus:outline-none focus:border-wine-800 bg-white">
+                        <option value="Si, confirmo con gusto mi asistencia">¡Sí, con mucho gusto asistiré! 🥂</option>
+                        <option value="Lamentablemente no podré asistir">Lamentablemente no podré asistir 🥺</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-sans font-semibold uppercase text-stone-600 tracking-wider mb-1">Número de personas</label>
+                    <select id="guestCount" class="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 focus:outline-none focus:border-wine-800 bg-white">
+                        <option value="1 persona">1 persona</option>
+                        <option value="2 personas" selected>2 personas</option>
+                        <option value="3 personas">3 personas</option>
+                        <option value="4 personas">4 personas</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-sans font-semibold uppercase text-stone-600 tracking-wider mb-1">Mensaje para los novios (opcional)</label>
+                    <textarea id="guestMessage" rows="2" placeholder="¡Muchas felicidades por su boda!" 
+                              class="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 focus:outline-none focus:border-wine-800 bg-white resize-none"></textarea>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold tracking-wider uppercase shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-base"></i>
+                        Enviar mensaje a WhatsApp
+                    </button>
+                    <p class="text-[9px] text-stone-400 text-center mt-2 font-sans">
+                        Se abrirá WhatsApp con los detalles precargados
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const WHATSAPP_PHONE_NUMBER = "528186549527";
+        const WEDDING_DATE = new Date("March 19, 2027 19:30:00").getTime();
+
+        const envelopeOverlay = document.getElementById('envelopeOverlay');
+        const envelopeCard = document.getElementById('envelopeCard');
+        const invitationContent = document.getElementById('invitationContent');
+        const weddingSong = document.getElementById('weddingSong');
+        let isOpened = false;
+
+        envelopeCard.addEventListener('click', openEnvelope);
+
+        function openEnvelope() {
+            if (isOpened) return;
+            isOpened = true;
+
+            envelopeCard.classList.add('envelope-open');
+            playAudioSafely();
+
+            setTimeout(() => {
+                envelopeOverlay.style.opacity = '0';
+                invitationContent.style.opacity = '1';
+                invitationContent.style.transform = 'translateY(0)';
+                
+                setTimeout(() => {
+                    envelopeOverlay.style.display = 'none';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 700);
+            }, 900);
+        }
+
+        const mainPlayBtn = document.getElementById('mainPlayBtn');
+        const playIcon = document.getElementById('playIcon');
+        const musicIconFloating = document.getElementById('musicIconFloating');
+        const songProgressBar = document.getElementById('songProgressBar');
+        const currentTimeLabel = document.getElementById('currentTimeLabel');
+        const durationLabel = document.getElementById('durationLabel');
+        let isPlaying = false;
+
+        function playAudioSafely() {
+            const playPromise = weddingSong.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    isPlaying = true;
+                    updateMusicUI(true);
+                }).catch(e => {
+                    isPlaying = false;
+                    updateMusicUI(false);
+                });
+            }
+        }
+
+        function toggleAudio() {
+            if (weddingSong.paused) {
+                weddingSong.play().then(() => {
+                    isPlaying = true;
+                    updateMusicUI(true);
+                }).catch(err => {
+                    console.error("Error al reproducir audio:", err);
+                });
+            } else {
+                weddingSong.pause();
+                isPlaying = false;
+                updateMusicUI(false);
+            }
+        }
+
+        function updateMusicUI(playing) {
+            if (playing) {
+                playIcon.className = 'fa-solid fa-pause text-base';
+                musicIconFloating.classList.add('animate-spin');
+                musicIconFloating.style.animationDuration = '4s';
+            } else {
+                playIcon.className = 'fa-solid fa-play ml-0.5 text-base';
+                musicIconFloating.classList.remove('animate-spin');
+            }
+        }
+
+        function rewindAudio() {
+            weddingSong.currentTime = Math.max(0, weddingSong.currentTime - 10);
+        }
+
+        function forwardAudio() {
+            weddingSong.currentTime = Math.min(weddingSong.duration || 0, weddingSong.currentTime + 10);
+        }
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "0:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        weddingSong.addEventListener('timeupdate', () => {
+            if (weddingSong.duration) {
+                const percent = (weddingSong.currentTime / weddingSong.duration) * 100;
+                songProgressBar.style.width = `${percent}%`;
+                currentTimeLabel.textContent = formatTime(weddingSong.currentTime);
+                durationLabel.textContent = formatTime(weddingSong.duration);
+            }
+        });
+
+        function seekSong(event) {
+            const bar = event.currentTarget;
+            const clickPosition = (event.clientX - bar.getBoundingClientRect().left) / bar.offsetWidth;
+            if (weddingSong.duration) {
+                weddingSong.currentTime = clickPosition * weddingSong.duration;
+            }
+        }
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = WEDDING_DATE - now;
+
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                document.getElementById('countdownDays').textContent = days < 10 ? '0' + days : days;
+                document.getElementById('countdownHours').textContent = hours < 10 ? '0' + hours : hours;
+                document.getElementById('countdownMins').textContent = minutes < 10 ? '0' + minutes : minutes;
+                document.getElementById('countdownSecs').textContent = seconds < 10 ? '0' + seconds : seconds;
+            } else {
+                document.getElementById('countdownDays').textContent = '00';
+                document.getElementById('countdownHours').textContent = '00';
+                document.getElementById('countdownMins').textContent = '00';
+                document.getElementById('countdownSecs').textContent = '00';
+            }
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        function copyClabe() {
+            const rawNumber = document.getElementById('clabeNumber').textContent.replace(/\s+/g, '').trim();
+            const tempInput = document.createElement('input');
+            tempInput.value = rawNumber;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            const copyText = document.getElementById('copyClabeText');
+            const originalText = copyText.textContent;
+            copyText.textContent = "¡Copiado!";
+            setTimeout(() => {
+                copyText.textContent = originalText;
+            }, 2000);
+        }
+
+        const rsvpModal = document.getElementById('rsvpModal');
+        const rsvpModalContent = document.getElementById('rsvpModalContent');
+
+        function openRsvpModal() {
+            rsvpModal.classList.remove('hidden');
+            setTimeout(() => {
+                rsvpModal.classList.remove('opacity-0');
+                rsvpModalContent.classList.remove('scale-95');
+                rsvpModalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeRsvpModal() {
+            rsvpModal.classList.add('opacity-0');
+            rsvpModalContent.classList.remove('scale-100');
+            rsvpModalContent.classList.add('scale-95');
+            setTimeout(() => {
+                rsvpModal.classList.add('hidden');
+            }, 300);
+        }
+
+        rsvpModal.addEventListener('click', (e) => {
+            if (e.target === rsvpModal) {
+                closeRsvpModal();
+            }
+        });
+
+        function sendWhatsApp(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('guestName').value.trim();
+            const attendance = document.getElementById('attendanceStatus').value;
+            const count = document.getElementById('guestCount').value;
+            const message = document.getElementById('guestMessage').value.trim();
+
+            let text = `¡Hola Yulisa y Ramón! ✨%0A%0A`;
+            text += `Soy *${encodeURIComponent(name)}*.%0A`;
+            text += `*Respuesta:* ${encodeURIComponent(attendance)}%0A`;
+            text += `*Cantidad de pases:* ${encodeURIComponent(count)}%0A`;
+
+            if (message) {
+                text += `*Mensaje:* "${encodeURIComponent(message)}"%0A`;
+            }
+
+            text += `%0A¡Muchas bendiciones por su unión matrimonial! 💍🥂`;
+
+            const waUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE_NUMBER}&text=${text}`;
+            window.open(waUrl, '_blank');
+            closeRsvpModal();
+        }
+    </script>
+</body>
+</html>
